@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="zh-CN" className={`${sans.variable} ${serif.variable} h-full antialiased`}>
-      <body className="min-h-full">{children}        <script src="/reading-room.js" defer></script>
+      <body className="min-h-full">{children}        <script src="/reading-room.js?v=2" defer></script>
       </body>
     </html>
   );
