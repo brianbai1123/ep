@@ -12,7 +12,8 @@ export function ChapterView({ chapter }: { chapter: Chapter }) {
   return (
     <article id="chapter" className="mx-auto w-full max-w-3xl px-5 py-10 sm:px-8 sm:py-14">
       <p className="text-sm font-semibold text-clay">
-        第 {index + 1} 站，共 {total} 站
+        第 <span className="font-num">{index + 1}</span> 站，共{" "}
+        <span className="font-num">{total}</span> 站
         <span className="mx-2 text-line">/</span>
         <span className="text-muted">{chapter.eyebrow}</span>
       </p>
@@ -20,7 +21,7 @@ export function ChapterView({ chapter }: { chapter: Chapter }) {
         {chapter.title}
       </h1>
       <p className="mt-4 text-sm leading-relaxed text-muted">{chapter.bookRef}</p>
-      <p className="mt-6 text-lg leading-relaxed text-ink">{chapter.lead}</p>
+      <p className="mt-6 font-kai text-lg leading-relaxed text-ink">{chapter.lead}</p>
       {chapter.strip ? (
         <PrincipleStrip kind={chapter.strip.kind} current={chapter.strip.index} />
       ) : null}
@@ -240,7 +241,7 @@ function Step({
 }) {
   return (
     <li className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-3">
-      <span className="font-serif text-3xl leading-none text-clay">{n}</span>
+      <span className="font-num text-3xl leading-none text-clay">{n}</span>
       <div className="leading-[1.9]">
         <h3 className="font-serif text-2xl leading-snug text-ink">{title}</h3>
         <div className="mt-3">{children}</div>

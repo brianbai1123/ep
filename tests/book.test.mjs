@@ -2,6 +2,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { chapters, chapterGroups, GROUP_ORDER, STRIPS } from "../src/content/book.ts";
+import {
+  resolveTheme,
+  THEMES,
+  THEME_BOOTSTRAP_SCRIPT,
+  THEME_KEY,
+} from "../src/lib/theme.ts";
 
 test("stations follow the book, then a closing synthesis", () => {
   assert.deepEqual(
@@ -79,4 +85,84 @@ test("the page shows the five-step method in order", () => {
     assert.ok(at > cursor, label);
     cursor = at;
   }
+});
+
+test("theme resolution gives a valid query priority over stored state", () => {
+  assert.equal(resolveTheme("night", "paper"), "night");
+});
+
+test("theme resolution uses valid stored state without a query", () => {
+  assert.equal(resolveTheme(null, "celadon"), "celadon");
+});
+
+test("theme resolution falls back from an invalid query to valid stored state", () => {
+  assert.equal(resolveTheme("invalid", "night"), "night");
+});
+
+test("theme resolution defaults to paper when no candidate is valid", () => {
+  assert.equal(resolveTheme(null, null), "paper");
+});
+
+test("theme state is isolated to the evolutionary psychology reader", () => {
+  assert.equal(THEME_KEY, "ep:theme");
+  assert.doesNotMatch(THEME_BOOTSTRAP_SCRIPT, /principles:theme|ruiprincipal:theme/);
+});
+
+test("layout runs the theme bootstrap inline before the body hydrates", () => {
+  const source = readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
+  const script = source.indexOf(
+    '<script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />',
+  );
+  const body = source.indexOf("<body");
+
+  assert.match(source, /<html[^>]*suppressHydrationWarning/);
+  assert.ok(script !== -1, "layout must contain the inline theme bootstrap");
+  assert.ok(script < body, "theme bootstrap must run before the body");
+});
+
+test("reading room uses four fonts and all three theme selectors", () => {
+  const layout = readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  const shell = readFileSync(
+    new URL("../src/components/reading-shell.tsx", import.meta.url),
+    "utf8",
+  );
+  const chapter = readFileSync(
+    new URL("../src/components/chapter-view.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(layout, /Noto_Sans_SC/);
+  assert.match(layout, /Noto_Serif_SC/);
+  assert.match(layout, /Cormorant_Garamond/);
+  assert.match(layout, /lxgw-wenkai-screen-web/);
+  assert.match(css, /:root\s*\{/);
+  assert.match(css, /data-theme="celadon"/);
+  assert.match(css, /data-theme="night"/);
+  assert.match(css, /\.font-kai/);
+  assert.match(css, /\.font-num/);
+  assert.match(shell, /ThemeSwitcher/);
+  assert.match(chapter, /font-num/);
+});
+
+test("theme choices are limited to the three required radio labels", () => {
+  assert.deepEqual(THEMES, [
+    { id: "paper", name: "宣纸", swatch: ["#f3efe6", "#1c3d36"] },
+    { id: "celadon", name: "青瓷", swatch: ["#e5ede9", "#1d4a5c"] },
+    { id: "night", name: "夜读", swatch: ["#161412", "#8fc7b0"] },
+  ]);
+});
+
+test("theme switcher uses the site event and accessible radio contract", () => {
+  const source = readFileSync(
+    new URL("../src/components/theme-switcher.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /ep-theme-change/);
+  assert.doesNotMatch(source, /principles:theme|ruiprincipal:theme|7habit:theme/);
+  assert.match(source, /role="radiogroup"/);
+  assert.match(source, /aria-label="主题颜色"/);
+  assert.match(source, /role="radio"/);
+  assert.match(source, /aria-checked=/);
 });

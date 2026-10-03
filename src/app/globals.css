@@ -11,6 +11,41 @@
   --muted: #5c554c;
   --paper: #f7f3eb;
   --ink: #1c1916;
+  --on-pine: #f7f3eb;
+  --selection: #d7ebe3;
+  color-scheme: light;
+}
+
+:root[data-theme="night"] {
+  --background: #161412;
+  --foreground: #e9e2d5;
+  --pine: #8fc7b0;
+  --pine-soft: #1f2e29;
+  --clay: #e0a07c;
+  --band: #2a251f;
+  --line: #38322a;
+  --muted: #a69d90;
+  --paper: #1f1c18;
+  --ink: #efe8db;
+  --on-pine: #13201c;
+  --selection: #2f4a40;
+  color-scheme: dark;
+}
+
+:root[data-theme="celadon"] {
+  --background: #e5ede9;
+  --foreground: #16201d;
+  --pine: #1d4a5c;
+  --pine-soft: #dcebf0;
+  --clay: #9c5236;
+  --band: #d6e4de;
+  --line: #c3d4cc;
+  --muted: #4c5b55;
+  --paper: #f1f6f3;
+  --ink: #14201c;
+  --on-pine: #f1f6f3;
+  --selection: #c7dfe8;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -24,6 +59,7 @@
   --color-muted: var(--muted);
   --color-paper: var(--paper);
   --color-ink: var(--ink);
+  --color-on-pine: var(--on-pine);
   --font-sans: var(--font-sans), "PingFang SC", "Noto Sans SC", "Microsoft YaHei",
     "WenQuanYi Micro Hei", sans-serif;
   --font-serif: var(--font-serif), "Songti SC", "Noto Serif SC", "Source Han Serif SC",
@@ -42,6 +78,15 @@ body {
   font-family: var(--font-serif);
 }
 
+.font-kai {
+  font-family: "LXGW WenKai Screen", "Kaiti SC", "STKaiti", "KaiTi", serif;
+}
+
+.font-num {
+  font-family: var(--font-numerals), var(--font-serif), serif;
+  font-variant-numeric: lining-nums;
+}
+
 ::selection {
-  background: #d7ebe3;
+  background: var(--selection);
 }
